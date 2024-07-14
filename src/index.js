@@ -46,7 +46,7 @@ function ButtonGroupCalc({ handleClick }) {
 function DisplayScreen({ display, label }) {
   return (
     <FloatingLabel controlId="floatingInput" label={label} className='w-100'>
-      <Form.Control value={display} type='text' readOnly className='text-end w-100 fs-3' />
+      <Form.Control value={display} type='text' readOnly className='text-end w-100 fs-2' />
     </FloatingLabel>
   );
 }
@@ -120,7 +120,7 @@ export default function Calculator() {
           }
           break;
         case '+/-':
-          setDisplay(prevDisplay => String(-parseFloat(prevDisplay)));
+          setDisplay(prevDisplay => String(-parseFloat(prevDisplay)));      
           break;
         case '.':
           if (!display.includes('.') && !isNewInput) {
@@ -138,7 +138,7 @@ export default function Calculator() {
           }
           break;
         case '1/x':
-          if (parseFloat(display) !== 0) {
+          if (parseFloat(display) !== 0 && display) {
             setDisplay(prevDisplay => String(toFixedNecessary(1 / prevDisplay, 12)));
           }
           break;
@@ -146,7 +146,9 @@ export default function Calculator() {
           break;
       }
     } else if (basicOperators.includes(value)) {
-      if (!firstValue) {
+      if (!display) {
+        return;
+      } else if (!firstValue) {
         setFirstValue(parseFloat(display));
         setOperator(value);
         setDisplay('');
