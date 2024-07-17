@@ -45,8 +45,8 @@ function ButtonGroupCalc({ handleClick }) {
   
 function DisplayScreen({ display, label }) {
   return (
-    <FloatingLabel controlId="floatingInput" label={label} className='w-100'>
-      <Form.Control value={display} type='text' readOnly className='text-end w-100 fs-2' />
+    <FloatingLabel controlId="floatingInput" label={label} className='w-100 fs-5'>
+      <Form.Control value={display} type='text' readOnly className='text-end w-100 h-100 fs-1' />
     </FloatingLabel>
   );
 }

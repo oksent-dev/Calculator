@@ -7,7 +7,7 @@ body {
 }
 .calculator {
   width: calc(15vw + 15vh);
-  height: calc(25vw + 25vh);
+  height: calc(22.5vw + 22.5vh);
   max-height: 100vh;
   margin-bottom: 5rem;
 }
@@ -23,4 +23,8 @@ label:after {
 }
 .button-calc {
   font-size: calc(1vw + 1vh);
+}
+
+.form-floating {
+  height: 4em;
 }
