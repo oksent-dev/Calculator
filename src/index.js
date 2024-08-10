@@ -1,21 +1,17 @@
 import ReactDOM from 'react-dom/client';
 import React, { useState, useEffect } from 'react';
 
-import { Container, Button, ButtonGroup, Form, FloatingLabel } from 'react-bootstrap';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
 
 function ButtonCalc({ value, handleClick, row }) {
   return (
-    <Button 
-      variant={value === '=' ? 'primary' : 'light'} 
+    <button 
       onClick={() => handleClick({value})} 
-      className={`${value === row[row.length - 1] ? '' : 'me-1'} button-calc fw-bold w-25`}
+      className={`flex-1 text-xl ${value === row[row.length - 1] ? '' : 'mr-1'} font-bold ${value === '=' ? 'bg-blue-500 dark:bg-blue-700' : 'bg-gray-200 dark:bg-gray-800'} dark:text-white`}
     >
       {value}
-    </Button>
+    </button>
   );
 }
 function ButtonGroupCalc({ handleClick }) {
@@ -26,9 +22,9 @@ function ButtonGroupCalc({ handleClick }) {
                   ['1', '2', '3', '+'], 
                   ['+/-', '0', '.', '=',]];
   return (
-    <div className="d-flex flex-column flex-grow-1 w-100">
+    <div className="flex flex-col flex-1">
       {values.map((row, index) => (
-        <ButtonGroup key={index} className='mt-2 flex-grow-1'>
+        <div key={index} className='mt-2 flex flex-row flex-1'>
           {row.map(value => (
             <ButtonCalc 
               key={value} 
@@ -37,26 +33,45 @@ function ButtonGroupCalc({ handleClick }) {
               handleClick={handleClick}
             />
           ))}
-        </ButtonGroup>
+        </div>
       ))}
     </div>
   );
 }
+
   
 function DisplayScreen({ display, label }) {
   return (
-    <FloatingLabel controlId="floatingInput" label={label} className='w-100 fs-5'>
-      <Form.Control value={display} type='text' readOnly className='text-end w-100 h-100 fs-1' />
-    </FloatingLabel>
+    <div className='relative w-full text-sm'>
+      <input 
+        value={display} 
+        type='text' 
+        readOnly 
+        className='text-right w-full h-full text-xl pt-8 pr-3 pb-1 pl-0 dark:bg-gray-800 dark:text-white' 
+        id='display-input'
+      />
+      <label 
+        htmlFor='display-input' 
+        className={`absolute top-0 right-0 pr-3 py-1 transition-all duration-200 ease-in-out text-sm text-gray-700 dark:text-gray-300`}
+      >
+        {label}
+      </label>
+    </div>
   );
 }
 
+
 export default function Calculator() {
+  const [dark, setDark] = useState(false);
   const [display, setDisplay] = useState('');
   const [operator, setOperator] = useState(null);
   const [firstValue, setFirstValue] = useState(null);
   const [label, setLabel] = useState('');
   const [isNewInput, setIsNewInput] = useState(true);
+  const darkModeHandler = () => {
+    setDark(!dark);
+    document.body.classList.toggle("dark");
+  }
 
   function toFixedNecessary(value, n){
     return +parseFloat(value).toFixed(n);
@@ -64,7 +79,6 @@ export default function Calculator() {
   
   function handleClick({value}) {
     function handleOperator({operator, firstValue, setDisplay, setFirstValue, setLabel, value}) {
-      return () => {
         const secondValue = parseFloat(display);
         let result;
         switch (operator) {
@@ -92,8 +106,7 @@ export default function Calculator() {
         setFirstValue(result);
         setDisplay(String(result));
         setIsNewInput(true);
-      };
-    }
+    };
     function clearDisplayifNewInput() {
       if (isNewInput) {
         setDisplay('');
@@ -146,23 +159,23 @@ export default function Calculator() {
           break;
       }
     } else if (basicOperators.includes(value)) {
-      if (!display) {
+      if (operator && !display) {
+        setOperator(value);
+        setLabel(toFixedNecessary(firstValue, 2) + " " + value);
+      } else if (!display) {
         return;
       } else if (!firstValue) {
         setFirstValue(parseFloat(display));
         setOperator(value);
         setDisplay('');
         setLabel(toFixedNecessary(display.replace(/\.$/,''), 2) + " " + value);
-      } else if ((operator && !display) || isNewInput) {
-        setOperator(value);
-        setLabel(toFixedNecessary(firstValue, 2) + " " + value);
       } else {
         setOperator(value);
-        handleOperator({operator, firstValue, setDisplay, setOperator, setFirstValue, setLabel, value})();
+        handleOperator({operator, firstValue, setDisplay, setOperator, setFirstValue, setLabel, value});
       }
     } else if (value === '=') {
       if (firstValue && operator && display && !isNewInput) {
-        handleOperator({operator, firstValue, setDisplay, setOperator, setFirstValue, setLabel, value})();
+        handleOperator({operator, firstValue, setDisplay, setOperator, setFirstValue, setLabel, value});
         setFirstValue(null);
       }
     } else {
@@ -188,6 +201,9 @@ export default function Calculator() {
         case 'Escape':
           buttonValue = 'C';
           break;
+        case 'Backspace':
+          buttonValue = '⌫';
+          break;
         default:
           return;
       }
@@ -201,15 +217,26 @@ export default function Calculator() {
   });
 
   return (
-    <Container className='d-flex justify-content-center align-items-center mt-1  '>
-      <div className='calculator d-flex flex-column flex-nowrap align-items-center justify-content-center'>
-        <h1>Calculator</h1>
-        <DisplayScreen display={display} label={label}/>
-        <ButtonGroupCalc 
-          handleClick={handleClick}
-        />
-      </div>
-    </Container>
+    <div className='h-screen w-full text-center transition-all duration-200 dark:bg-gray-900 dark:text-white'>
+        <div>
+          <button onClick={()=> darkModeHandler()}>
+            { dark ? 'Light Mode' : 'Dark Mode' }
+          </button>
+        </div>
+        <div className='flex justify-center'>
+          <div className='flex flex-col mt-4 h-[500px] w-[400px]'>
+            <div>
+              <h1 className='text-4xl sm:text-5xl text-center '>Calculator</h1>
+            </div>
+            <DisplayScreen display={display} label={label}/>
+            <ButtonGroupCalc 
+              handleClick={handleClick}
+            />
+          </div>
+        </div>    
+    </div>
+
+
   );
 }
 

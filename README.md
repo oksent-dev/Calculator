@@ -1,5 +1,5 @@
 ## Introduction
-Fully functional calculator with multiple operations built in React with React Bootstrap. \
+Fully functional calculator with multiple operations built in React and styled with Tailwind. \
 No eval used, no bugs either. 
 
 ## Preview
