@@ -1,6 +1,6 @@
 ## Introduction
 Fully functional calculator with multiple operations built in React and styled with Tailwind. Includes dark theme. \
-No eval used, no bugs either. 
+No eval used, no bugs either. \
 [Visit](https://projects.oksent.dev/apps/calculator)
 
 ## Preview
