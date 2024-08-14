@@ -136,7 +136,9 @@ function handleClick({value}: {value: string}) {
         }
         break;
       case '+/-':
-        setDisplay(prevDisplay => String(-parseFloat(prevDisplay)));      
+        if (display) {
+          setDisplay(prevDisplay => String(-parseFloat(prevDisplay)));
+        }  
         break;
       case '.':
         if (!display.includes('.') && !isNewInput) {
